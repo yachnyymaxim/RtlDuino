@@ -275,6 +275,7 @@ void PadiWebServer::serveStatic(const char* uri, SdFatFs& fs, const char* path, 
 }*/
 int PadiWebServer::serveStatic(SdFatFs& fs, String path){
 
+      bool regularFile = false;
       if (this->method() !=  HTTP_GET){
             return -1;
       }
@@ -282,14 +283,22 @@ int PadiWebServer::serveStatic(SdFatFs& fs, String path){
       path += this->uri();
 
       if (this->uri().endsWith("/")) path += "index.html";
-      //check if file exists
-      if (fs.isFile(path.c_str()) != 1){
-        return -1;
-      }
+
       String contentType(getContentType(path));
+      //check if file exists
+      if (fs.isFile(path.c_str()) == 1){
+        regularFile = true;
+      }
+
       //check if gz version exists
       if (fs.isFile(String(path + ".gz").c_str()) == 1){
         path += ".gz";
+        regularFile = true;
+      }
+
+
+      if(!regularFile ){
+          return -1;
       }
 
 
