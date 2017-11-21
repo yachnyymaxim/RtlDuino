@@ -366,8 +366,9 @@ void PadiWebServer::handleClient() {
 
           if (_currentClient.connected()) {
             _currentStatus = HC_WAIT_CLOSE;
-            _statusChange = millis();
-            keepCurrentClient = true;
+            //speed fix close conection immediately after send data
+            //_statusChange = millis();
+            //keepCurrentClient = true;
           }
         }
       } else { // !_currentClient.available()
@@ -393,7 +394,7 @@ void PadiWebServer::handleClient() {
   }
 
   if (callYield) {
-    yield();
+    //yield();
   }
 }
 
