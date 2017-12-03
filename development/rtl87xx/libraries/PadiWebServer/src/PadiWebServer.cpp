@@ -311,7 +311,7 @@ int PadiWebServer::serveStatic(SdFatFs& fs, String path){
 
 size_t PadiWebServer::streamFile(SdFatFile &file, const String& contentType,  const String& fileName){
 
-      char buffer[4096];
+      char buffer[2048];
       size_t size = 0;
       int readLen;
       setContentLength(file.size());
