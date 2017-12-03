@@ -38,7 +38,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
 
     pinUserSS == -1;
 
-    defaultFrequency = 20000000;
+    defaultFrequency = 2000000;
 }
 
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
@@ -69,10 +69,10 @@ void SPIClass::endTransaction(void)
 void SPIClass::begin(void)
 {
     spi_init(
-        (spi_t *)pSpiMaster, 
-        (PinName)g_APinDescription[pinMOSI].pinname, 
-        (PinName)g_APinDescription[pinMISO].pinname, 
-        (PinName)g_APinDescription[pinCLK].pinname, 
+        (spi_t *)pSpiMaster,
+        (PinName)g_APinDescription[pinMOSI].pinname,
+        (PinName)g_APinDescription[pinMISO].pinname,
+        (PinName)g_APinDescription[pinCLK].pinname,
         (PinName)g_APinDescription[pinSS].pinname
     );
     spi_format((spi_t *)pSpiMaster, 8, 0, 0);
@@ -92,7 +92,7 @@ byte SPIClass::transfer(byte _pin, uint8_t _data, SPITransferMode _mode)
         pinMode(_pin, OUTPUT);
         digitalWrite(_pin, 0);
     }
-    
+
     d = (byte) spi_master_write( (spi_t *)pSpiMaster, _data );
 
     if (_pin != pinSS && _mode == SPI_LAST) {
@@ -144,6 +144,45 @@ void SPIClass::transfer(void *_buf, size_t _count, SPITransferMode _mode)
     transfer(pinSS, _buf, _count, _mode);
 }
 
+void SPIClass::transferDMA(byte _pin, void *_buf, size_t _count, SPITransferMode _mode)
+{
+    if (_pin != pinSS) {
+        pinMode(_pin, OUTPUT);
+        digitalWrite(_pin, 0);
+    }
+    spi_master_write_read_stream_dma( (spi_t *)pSpiMaster , (char *)_buf, (char *)_buf, (uint32_t)_count );
+    while(spi_busy((spi_t *)pSpiMaster));
+
+
+    if (_pin != pinSS && _mode == SPI_LAST) {
+        digitalWrite(_pin, 1);
+    }
+}
+
+void SPIClass::transferDMA(void *_buf, size_t _count, SPITransferMode _mode)
+{
+    transferDMA(pinSS, _buf, _count, _mode);
+}
+
+void SPIClass::writeDMA(byte _pin, void *_buf, size_t _count, SPITransferMode _mode)
+{
+    if (_pin != pinSS) {
+        pinMode(_pin, OUTPUT);
+        digitalWrite(_pin, 0);
+    }
+    spi_master_write_stream_dma( (spi_t *)pSpiMaster , (char *)_buf, (uint32_t)_count );
+    while(spi_busy((spi_t *)pSpiMaster));
+
+
+    if (_pin != pinSS && _mode == SPI_LAST) {
+        digitalWrite(_pin, 1);
+    }
+}
+
+void SPIClass::writeDMA(void *_buf, size_t _count, SPITransferMode _mode)
+{
+    transferDMA(pinSS, _buf, _count, _mode);
+}
 uint16_t SPIClass::transfer16(byte _pin, uint16_t _data, SPITransferMode _mode)
 {
     union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } t;

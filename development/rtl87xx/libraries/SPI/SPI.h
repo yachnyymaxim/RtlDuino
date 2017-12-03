@@ -23,7 +23,7 @@
 //   - SPISetting(clock, bitOrder, dataMode)
 #define SPI_HAS_TRANSACTION 1
 
-// SPI_HAS_EXTENDED_CS_PIN_HANDLING means SPI has automatic 
+// SPI_HAS_EXTENDED_CS_PIN_HANDLING means SPI has automatic
 // CS pin handling and provides the following methods:
 //   - begin(pin)
 //   - end(pin)
@@ -73,6 +73,12 @@ public:
     void transfer(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
     void transfer(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
 
+		void transferDMA(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+    void transferDMA(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+
+    void writeDMA(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+		void writeDMA(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+
     uint16_t transfer16(byte _pin, uint16_t _data, SPITransferMode _mode = SPI_LAST);
     uint16_t transfer16(uint16_t _data, SPITransferMode _mode = SPI_LAST);
 
@@ -103,7 +109,7 @@ private:
     int pinUserSS;
     BitOrder bitOrder;
 
-    int defaultFrequency; 
+    int defaultFrequency;
 };
 
 extern SPIClass SPI;
