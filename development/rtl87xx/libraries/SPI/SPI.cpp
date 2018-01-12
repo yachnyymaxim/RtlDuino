@@ -36,7 +36,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     pinCLK = clk;
     pinSS = ss;
 
-    pinUserSS == -1;
+    pinUserSS = -1;
 
     defaultFrequency = 2000000;
 }

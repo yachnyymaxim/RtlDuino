@@ -137,7 +137,10 @@ SoftwareSerial::~SoftwareSerial()
 
 void SoftwareSerial::begin(long speed)
 {
-    pUART = malloc ( sizeof(serial_t) );
+    if (pUART != NULL) {
+        stopListeninng();
+    }
+    
     if (pUART == NULL) {
         rtl_printf("fail to malloc\r\n");
     }

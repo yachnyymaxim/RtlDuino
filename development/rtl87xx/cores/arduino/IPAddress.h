@@ -15,12 +15,15 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  
+  * modified by av1024: added fromString() from original IPAddress.h/cpp
 */
 
 #ifndef IPAddress_h
 #define IPAddress_h
 
 #include <stdint.h>
+#include <WString.h>
 #include <Printable.h>
 
 // A class to make it easier to handle and pass around IP addresses
@@ -46,6 +49,10 @@ public:
     IPAddress(uint32_t address);
     IPAddress(const uint8_t *address);
 
+    // av1024, from AVR/IPAddress
+    bool fromString(const char *address);
+    bool fromString(const String &address) { return fromString(address.c_str()); }
+
     // Overloaded cast operator to allow IPAddress objects to be used where a pointer
     // to a four-byte uint8_t array is expected
     operator uint32_t() const { return _address.dword; };
@@ -62,6 +69,9 @@ public:
 
 	//NeoJou
 	char * get_address(void);
+	
+	// av1024
+	String toString() { return String(get_address()); };
 
     virtual size_t printTo(Print& p) const;
 

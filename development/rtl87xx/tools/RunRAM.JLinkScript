@@ -2,8 +2,8 @@ r0
 r1
 h
 r
-loadbin "run_ram.bin" 0x10000bc8
-loadbin "ota.bin" 0x10005FF0
+loadbin run_ram.bin 0x10000bc8
+loadbin ota.bin 0x10005FF0
 r
 w4 0x40000210,0x20111117
 g
