@@ -1155,14 +1155,14 @@ s32_t SPIFFS_vis(spiffs *fs) {
   } // per block
 
   spiffs_printf("era_cnt_max: %i\n", fs->max_erase_count);
-  spiffs_printf("last_errno:  %i\n", fs->err_code);
-  spiffs_printf("blocks:      %i\n", fs->block_count);
-  spiffs_printf("free_blocks: %i\n", fs->free_blocks);
-  spiffs_printf("page_alloc:  %i\n", fs->stats_p_allocated);
-  spiffs_printf("page_delet:  %i\n", fs->stats_p_deleted);
+  spiffs_printf("last_errno:  %li\n", fs->err_code);
+  spiffs_printf("blocks:      %li\n", fs->block_count);
+  spiffs_printf("free_blocks: %li\n", fs->free_blocks);
+  spiffs_printf("page_alloc:  %li\n", fs->stats_p_allocated);
+  spiffs_printf("page_delet:  %li\n", fs->stats_p_deleted);
   u32_t total, used;
   SPIFFS_info(fs, &total, &used);
-  spiffs_printf("used:        %i of %i\n", used, total);
+  spiffs_printf("used:        %li of %li\n", used, total);
 
   SPIFFS_UNLOCK(fs);
   return res;

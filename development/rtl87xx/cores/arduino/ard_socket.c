@@ -95,7 +95,8 @@ int get_receive(int sock, uint8_t* data, int length, int flag, uint32_t *peer_ad
     socklen_t fromlen;
 
     uint8_t backup_recvtimeout = 0;
-    int backup_recv_timeout, recv_timeout, len;
+    int backup_recv_timeout, recv_timeout;
+    socklen_t len;
 
     if (flag & 0x01) {
         // for MSG_PEEK, we try to peek packets by changing receiving timeout to 10ms

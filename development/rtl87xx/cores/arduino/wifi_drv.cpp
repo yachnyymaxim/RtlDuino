@@ -393,7 +393,7 @@ char* WiFiDrv::getCurrentSSID()
 
 uint8_t* WiFiDrv::getCurrentBSSID()
 {
-    uint8_t bssid[ETH_ALEN];
+    static uint8_t bssid[ETH_ALEN];
     wext_get_bssid(WLAN0_NAME, bssid);
     return bssid;
 }
@@ -459,7 +459,7 @@ char* WiFiDrv::getSSIDNetoworks(uint8_t networkItem)
 uint8_t WiFiDrv::getEncTypeNetowrks(uint8_t networkItem)
 {
 	if (networkItem >= WL_NETWORKS_LIST_MAXNUM)
-		return NULL;
+		return 0;
 
     uint8_t encType = 0;
 
@@ -478,21 +478,22 @@ uint8_t WiFiDrv::getEncTypeNetowrks(uint8_t networkItem)
 
 uint32_t WiFiDrv::getEncTypeNetowrksEx(uint8_t networkItem)
 {
-    return (networkItem >= WL_NETWORKS_LIST_MAXNUM) ? NULL : _networkEncr[networkItem];
+    return (networkItem >= WL_NETWORKS_LIST_MAXNUM) ? 0 : _networkEncr[networkItem];
 }
 
 int32_t WiFiDrv::getRSSINetoworks(uint8_t networkItem)
 {
 	if (networkItem >= WL_NETWORKS_LIST_MAXNUM)
-		return NULL;
+		return 0;
 
 	return _networkRssi[networkItem];
 }
 
 char*  WiFiDrv::getFwVersion()
 {
-	// The version is for compatible to arduino example code
-    return "1.1.0";
+    // The version is for compatible to arduino example code
+    static char _fw[] = "1.1.0"; // fix deprecated warn
+    return _fw;
 }
 
 int WiFiDrv::getHostByName(const char* aHostname, IPAddress& aResult)

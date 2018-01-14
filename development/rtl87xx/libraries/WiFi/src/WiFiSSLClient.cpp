@@ -51,23 +51,23 @@ uint8_t WiFiSSLClient::connected() {
 }
 
 int WiFiSSLClient::available() {
-	int ret = 0;
-    int err;
+  int ret = 0;
+  int err;
 
-	if(!_is_connected) return 0;
-  	if (sslclient.socket >= 0)
-  	{	
-      	ret = ssldrv.availData(&sslclient);
-		if (ret > 0) {
-            return 1;
+  if(!_is_connected) return 0;
+  if (sslclient.socket >= 0)
+    {
+      ret = ssldrv.availData(&sslclient);
+      if (ret > 0) {
+          return 1;
         } else {
-            err = ssldrv.getLastErrno(&sslclient);
-            if (err != EAGAIN) {
-			    _is_connected = false;
+          err = ssldrv.getLastErrno(&sslclient);
+          if (err != EAGAIN) {
+              _is_connected = false;
             }
-		}
-		return 0;
-  	}
+        }
+    }
+  return 0;
 }
 
 int WiFiSSLClient::read() {
@@ -146,11 +146,11 @@ WiFiSSLClient::operator bool() {
 }
 
 int WiFiSSLClient::connect(IPAddress ip, uint16_t port) {
-    connect(ip, port, _rootCABuff, _cli_cert, _cli_key);
+    return connect(ip, port, _rootCABuff, _cli_cert, _cli_key);
 }
 
 int WiFiSSLClient::connect(const char *host, uint16_t port) {
-    connect(host, port, _rootCABuff, _cli_cert, _cli_key);
+    return connect(host, port, _rootCABuff, _cli_cert, _cli_key);
 }
 
 
@@ -203,7 +203,8 @@ void WiFiSSLClient::setClientCertificate(unsigned char *client_ca, unsigned char
 int WiFiSSLClient::setRecvTimeout(int timeout) {
     sslclient.recvTimeout = timeout;
     if (connected()) {
-        ssldrv.setSockRecvTimeout(sslclient.socket, sslclient.recvTimeout);
+        return ssldrv.setSockRecvTimeout(sslclient.socket, sslclient.recvTimeout);
     }
+    return -1;
 }
 

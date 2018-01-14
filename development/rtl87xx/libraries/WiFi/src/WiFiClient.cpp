@@ -66,25 +66,26 @@ uint8_t WiFiClient::connected() {
 }
 
 int WiFiClient::available() {
-	int ret = 0;
-    int err;
+  int ret = 0;
+  int err;
 
-	if(!_is_connected) {
-		return 0;
+  if(!_is_connected) {
+      return 0;
     }
-  	if (_sock >= 0)
-  	{
-      	ret = clientdrv.availData(_sock);
-        if (ret > 0) {
-            return 1;
+  if (_sock >= 0)
+    {
+      ret = clientdrv.availData(_sock);
+      if (ret > 0) {
+          return 1;
         } else {
-            err = clientdrv.getLastErrno(_sock);
-            if (err != EAGAIN) {
-                _is_connected = false;
+          err = clientdrv.getLastErrno(_sock);
+          if (err != EAGAIN) {
+              _is_connected = false;
             }
-            return 0;
+          return 0;
         }
-  	}
+    }
+  return 0;
 }
 
 int WiFiClient::read() {
@@ -213,10 +214,11 @@ void WiFiClient::flush() {
 int WiFiClient::setRecvTimeout(int timeout) {
     if (connected()) {
         recvTimeout = timeout;
-        clientdrv.setSockRecvTimeout(_sock, recvTimeout);
+        return clientdrv.setSockRecvTimeout(_sock, recvTimeout);
     }
+    return -1;
 }
 
 int WiFiClient::read(char *buf, size_t size) {
-    read( (uint8_t *)buf, size);
+    return read( (uint8_t *)buf, size);
 }
