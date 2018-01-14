@@ -34,6 +34,8 @@ enum HTTPUploadStatus { UPLOAD_FILE_START, UPLOAD_FILE_WRITE, UPLOAD_FILE_END,
 enum HTTPClientStatus { HC_NONE, HC_WAIT_READ, HC_WAIT_CLOSE };
 enum HTTPAuthMethod { BASIC_AUTH, DIGEST_AUTH };
 
+//#define USE_SDFATFS
+
 #define HTTP_DOWNLOAD_UNIT_SIZE 1460
 
 #ifndef HTTP_UPLOAD_BUFLEN
@@ -62,9 +64,10 @@ typedef struct {
 
 #include "detail/RequestHandler.h"
 
-
+#ifdef USE_SDFATFS
 class SdFatFs;
 class SdFatFile;
+#endif
 
 
 class PadiWebServer
@@ -88,7 +91,9 @@ public:
   void on(const String &uri, HTTPMethod method, THandlerFunction fn);
   void on(const String &uri, HTTPMethod method, THandlerFunction fn, THandlerFunction ufn);
   void addHandler(RequestHandler* handler);
+#ifdef USE_SDFATFS
   int serveStatic(SdFatFs& fs, String path);
+#endif
   //void serveStatic(const char* uri, SdFatFs& fs, const char* path, const char* cache_header = NULL );
   void onNotFound(THandlerFunction fn);  //called when handler is not assigned
   void onFileUpload(THandlerFunction fn); //handle file uploads
@@ -129,8 +134,9 @@ public:
   //void sendContent_P(PGM_P content, size_t size);
 
   static String urlDecode(const String& text);
-
+#ifdef USE_SDFATFS
   size_t streamFile(SdFatFile &file, const String& contentType,  const String& fileName);
+#endif
 
 protected:
   void _addRequestHandler(RequestHandler* handler);

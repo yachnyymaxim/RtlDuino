@@ -39,7 +39,7 @@ char* WiFiClass::firmwareVersion()
 	return WiFiDrv::getFwVersion();
 }
 
-int WiFiClass::begin(char* ssid)
+int WiFiClass::begin(const char* ssid)
 {
 	uint8_t status = WL_IDLE_STATUS;
 
@@ -55,7 +55,7 @@ int WiFiClass::begin(char* ssid)
     return status;
 }
 
-int WiFiClass::begin(char* ssid, uint8_t key_idx, const char *key)
+int WiFiClass::begin(const char* ssid, uint8_t key_idx, const char *key)
 {
     uint8_t status = WL_IDLE_STATUS;
 
@@ -71,7 +71,7 @@ int WiFiClass::begin(char* ssid, uint8_t key_idx, const char *key)
     return status;
 }
 
-int WiFiClass::begin(char* ssid, const char *passphrase)
+int WiFiClass::begin(const char* ssid, const char *passphrase)
 {
 	uint8_t status = WL_IDLE_STATUS;
 
@@ -194,7 +194,7 @@ int WiFiClass::hostByName(const char* aHostname, IPAddress& aResult)
 	return WiFiDrv::getHostByName(aHostname, aResult);
 }
 
-int WiFiClass::apbegin(char* ssid, char* channel)
+int WiFiClass::apbegin(const char* ssid, char* channel)
 {
 	uint8_t status = WL_IDLE_STATUS;
 
@@ -213,7 +213,7 @@ int WiFiClass::apbegin(char* ssid, char* channel)
     return status;
 }
 
-int WiFiClass::apbegin(char* ssid, char* password, char* channel)
+int WiFiClass::apbegin(const char* ssid, char* password, char* channel)
 {
 	uint8_t status = WL_IDLE_STATUS;
 
@@ -238,6 +238,28 @@ int WiFiClass::apbegin(char* ssid, char* password, char* channel)
 int WiFiClass::SetDTIM(uint8_t dtn)
 {
 	return WiFiDrv::SetDTIM(dtn);
+}
+
+// av1024
+
+void WiFiClass::setDNS(IPAddress dns_server1) {
+  WiFiDrv::setDNS(1, (uint32_t)dns_server1, 0);
+}
+
+void WiFiClass::setDNS(IPAddress dns_server1, IPAddress dns_server2) {
+  WiFiDrv::setDNS(2, (uint32_t)dns_server1, (uint32_t)dns_server2);
+}
+
+IPAddress WiFiClass::getDNS1(void) {
+  return IPAddress(WiFiDrv::getDNS(0));
+}
+
+IPAddress WiFiClass::getDNS2(void) {
+  return IPAddress(WiFiDrv::getDNS(1));
+}
+
+int WiFiClass::channel(void) {
+  return WiFiDrv::getChannel();
 }
 
 

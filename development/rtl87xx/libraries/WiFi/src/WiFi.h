@@ -52,7 +52,7 @@ public:
      *
      * param ssid: Pointer to the SSID string.
      */
-    int begin(char* ssid);
+    int begin(const char* ssid);
 
     /* Start Wifi connection with WEP encryption.
      * Configure a key into the device. The key type (WEP-40, WEP-104)
@@ -62,7 +62,7 @@ public:
      * param key_idx: The key index to set. Valid values are 0-3.
      * param key: Key input buffer.
      */
-    int begin(char* ssid, uint8_t key_idx, const char* key);
+    int begin(const char* ssid, uint8_t key_idx, const char* key);
 
     /* Start Wifi connection with passphrase
      * the most secure supported mode will be automatically selected
@@ -71,7 +71,7 @@ public:
      * param passphrase: Passphrase. Valid characters in a passphrase
      *        must be between ASCII 32-126 (decimal).
      */
-    int begin(char* ssid, const char *passphrase);
+    int begin(const char* ssid, const char *passphrase);
 
     /* Change Ip configuration settings disabling the dhcp client
         *
@@ -116,6 +116,20 @@ public:
      *
      */
     void setDNS(IPAddress dns_server1, IPAddress dns_server2);
+
+    /* Get current DNS Ip
+     *
+     *
+     *
+     */
+    IPAddress getDNS1(void);
+    IPAddress getDNS2(void);
+
+    /* Get current channel
+     *
+     * return: current assotiated channel (1-14) or 0 on errror
+     */
+    int channel(void);
 
     /*
      * Disconnect from the network
@@ -248,9 +262,9 @@ public:
      */
     int hostByName(const char* aHostname, IPAddress& aResult);
 
-	int apbegin(char* ssid, char* channel);
+	int apbegin(const char* ssid, char* channel);
 
-	int apbegin(char* ssid, char* password, char* channel);
+	int apbegin(const char* ssid, char* password, char* channel);
 
 	int SetDTIM(uint8_t dtn = 1);
 

@@ -71,7 +71,7 @@ public:
      * param ssid_len: Lenght of ssid string.
      * return: WL_SUCCESS or WL_FAILURE
 	 */
-    static int8_t wifiSetNetwork(char* ssid, uint8_t ssid_len);
+    static int8_t wifiSetNetwork(const char* ssid, uint8_t ssid_len);
 
     /* Start Wifi connection with passphrase
      * the most secure supported mode will be automatically selected
@@ -83,7 +83,7 @@ public:
      * param len: Lenght of passphrase string.
      * return: WL_SUCCESS or WL_FAILURE
      */
-    static int8_t wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *passphrase, const uint8_t len);
+    static int8_t wifiSetPassphrase(const char* ssid, uint8_t ssid_len, const char *passphrase, const uint8_t len);
 
     /* Start Wifi connection with WEP encryption.
      * Configure a key into the device. The key type (WEP-40, WEP-104)
@@ -96,7 +96,7 @@ public:
      * param len: Lenght of key string.
      * return: WL_SUCCESS or WL_FAILURE
      */
-    static int8_t wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const void *key, const uint8_t len);
+    static int8_t wifiSetKey(const char* ssid, uint8_t ssid_len, uint8_t key_idx, const void *key, const uint8_t len);
 
     /* Set ip configuration disabling dhcp client
         *
@@ -118,6 +118,20 @@ public:
            * param dns_server2: Static DNS server2 configuration
            */
     static void setDNS(uint8_t validParams, uint32_t dns_server1, uint32_t dns_server2);
+
+    /* Get DNS ip configuration
+     *
+     * param index: Stored DNS index (0 or 1)
+     *
+     * return: IP address
+     */
+    static uint32_t getDNS(uint8_t index);
+
+    /* Get currant STA channel
+     *
+     * return: Channel 1-13 or 0 on errror
+     */
+    static int32_t getChannel(void);
 
     /*
      * Disconnect from the network
@@ -263,7 +277,7 @@ public:
      */
     static char* getFwVersion();
 
-	static int8_t apSetNetwork(char* ssid, uint8_t ssid_len);
+	static int8_t apSetNetwork(const char* ssid, uint8_t ssid_len);
 
 	static int8_t apSetPassphrase(const char *passphrase, uint8_t len);
 

@@ -16,6 +16,7 @@ extern "C" {
 #include "lwip_netconf.h"
 #include "lwip/err.h"
 #include "lwip/api.h"
+#include "lwip/dns.h"
 #include <dhcp/dhcps.h>
 
 extern struct netif xnetif[NET_IF_NUM]; 
@@ -66,7 +67,7 @@ void WiFiDrv::wifiDriverInit()
     }
 }
 
-int8_t WiFiDrv::wifiSetNetwork(char* ssid, uint8_t ssid_len)
+int8_t WiFiDrv::wifiSetNetwork(const char* ssid, uint8_t ssid_len)
 {
 	int ret;
     uint8_t dhcp_result;
@@ -104,7 +105,7 @@ int8_t WiFiDrv::wifiSetNetwork(char* ssid, uint8_t ssid_len)
     }
 }
 
-int8_t WiFiDrv::wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *passphrase, const uint8_t len)
+int8_t WiFiDrv::wifiSetPassphrase(const char* ssid, uint8_t ssid_len, const char *passphrase, const uint8_t len)
 {
 	int ret;
     uint8_t dhcp_result;
@@ -144,7 +145,7 @@ int8_t WiFiDrv::wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *pass
     }
 }
 
-int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const void *key, const uint8_t len)
+int8_t WiFiDrv::wifiSetKey(const char* ssid, uint8_t ssid_len, uint8_t key_idx, const void *key, const uint8_t len)
 {
 	int ret;
     uint8_t dhcp_result;
@@ -205,7 +206,35 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
 
 }
 
-int8_t WiFiDrv::apSetNetwork(char* ssid, uint8_t ssid_len)
+//TODO: config()
+
+void WiFiDrv::setDNS(uint8_t validParams, uint32_t dns_server1, uint32_t dns_server2) {
+  //LwIP_SetDNS(); // dns0
+  ip_addr_t dns;
+  ip4_addr_set_u32(&dns, dns_server1);
+  if (validParams == 1) {
+      dns_setserver(0, &dns);
+  } else if (validParams == 2) {
+      dns_setserver(0, &dns);
+      ip4_addr_set_u32(&dns, dns_server2);
+      dns_setserver(1, &dns);
+    }
+}
+
+uint32_t WiFiDrv::getDNS(uint8_t index) {
+
+  if (index > 1) return 0;
+  return dns_getserver(index).addr;
+}
+
+int32_t WiFiDrv::getChannel() {
+  int ch = 0;
+  if (RTW_SUCCESS == wifi_get_channel(&ch)) return ch;
+  return 0;
+}
+
+
+int8_t WiFiDrv::apSetNetwork(const char* ssid, uint8_t ssid_len)
 {
 	int ret = WL_SUCCESS;
 

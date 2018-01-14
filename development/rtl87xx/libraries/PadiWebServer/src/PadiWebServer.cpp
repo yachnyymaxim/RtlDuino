@@ -27,7 +27,9 @@
 //#include "WiFiClient.h"
 #include "PadiWebServer.h"
 //#include "FS.h"
-#include "SdFatFs.h"
+#ifdef USE_SDFATFS
+ #include "SdFatFs.h"
+#endif
 #include "detail/RequestHandlersImpl.h"
 #include "rtl_crypto.h"
 
@@ -273,6 +275,7 @@ void PadiWebServer::_addRequestHandler(RequestHandler* handler) {
 void PadiWebServer::serveStatic(const char* uri, SdFatFs& fs, const char* path, const char* cache_header) {
     _addRequestHandler(new StaticRequestHandler(fs, path, uri, cache_header));
 }*/
+#ifdef USE_SDFATFS
 int PadiWebServer::serveStatic(SdFatFs& fs, String path){
 
       bool regularFile = false;
@@ -334,6 +337,8 @@ size_t PadiWebServer::streamFile(SdFatFile &file, const String& contentType,  co
       }
       return size;
 }
+
+#endif // USE_SDFATFS
 
 void PadiWebServer::handleClient() {
   if (_currentStatus == HC_NONE) {
