@@ -159,6 +159,7 @@ tools.jlgdbota.path.linux64=
 tools.jlgdbota.path={runtime.tools.ameba_tools.path}
 tools.jlgdbota.upload.params.quiet=
 tools.jlgdbota.upload.pattern="{runtime.platform.path}/tools/JLinkGDB_OTA.cmd" "{runtime.tools.ameba_tools.path}" "{runtime.platform.path}/tools" "{runtime.tools.arm-none-eabi-gcc.path}/bin/"
+tools.jlgdbota.upload.pattern.linux="{runtime.platform.path}/tools/JLinkGDB_OTA.sh" "{runtime.tools.ameba_tools.path}" "{runtime.platform.path}/tools" "{runtime.tools.arm-none-eabi-gcc.path}/bin/"
 
 tools.jlgdbimg.upload.params.verbose=
 tools.jlgdbimg.cmd=JLinkGDB_IMG
