@@ -194,7 +194,7 @@ int WiFiClass::hostByName(const char* aHostname, IPAddress& aResult)
 	return WiFiDrv::getHostByName(aHostname, aResult);
 }
 
-int WiFiClass::apbegin(char* ssid, char* channel)
+int WiFiClass::apbegin(char* ssid, char* channel, bool sta, uint8_t gw0, uint8_t gw1, uint8_t gw2, uint8_t gw3)
 {
 	uint8_t status = WL_IDLE_STATUS;
 
@@ -202,7 +202,7 @@ int WiFiClass::apbegin(char* ssid, char* channel)
     {
 	    WiFiDrv::apSetChannel(channel);
 		
-		if(WiFiDrv::apActivate() != WL_FAILURE)
+		if(WiFiDrv::apActivate(sta, gw0, gw1, gw2, gw3) != WL_FAILURE)
 			status = WL_CONNECTED;
 		else
 			status = WL_CONNECT_FAILED;
@@ -213,7 +213,7 @@ int WiFiClass::apbegin(char* ssid, char* channel)
     return status;
 }
 
-int WiFiClass::apbegin(char* ssid, char* password, char* channel)
+int WiFiClass::apbegin(char* ssid, char* password, char* channel, bool sta, uint8_t gw0, uint8_t gw1, uint8_t gw2, uint8_t gw3)
 {
 	uint8_t status = WL_IDLE_STATUS;
 
@@ -222,7 +222,7 @@ int WiFiClass::apbegin(char* ssid, char* password, char* channel)
     	WiFiDrv::apSetPassphrase(password, strlen(password));
 	    WiFiDrv::apSetChannel(channel);
 		
-		if(WiFiDrv::apActivate() != WL_FAILURE)
+		if(WiFiDrv::apActivate(sta, gw0, gw1, gw2, gw3) != WL_FAILURE)
 			status = WL_CONNECTED;
 		else
 			status = WL_CONNECT_FAILED;

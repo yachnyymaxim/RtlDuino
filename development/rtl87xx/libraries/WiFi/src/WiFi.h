@@ -248,9 +248,9 @@ public:
      */
     int hostByName(const char* aHostname, IPAddress& aResult);
 
-	int apbegin(char* ssid, char* channel);
+	int apbegin(char* ssid, char* channel, bool sta = false, uint8_t gw0 = 192, uint8_t gw1 = 168, uint8_t gw2 = 1, uint8_t gw3 = 1);
 
-	int apbegin(char* ssid, char* password, char* channel);
+	int apbegin(char* ssid, char* password, char* channel, bool sta = false, uint8_t gw0 = 192, uint8_t gw1 = 168, uint8_t gw2 = 1, uint8_t gw3 = 1);
 
 	int SetDTIM(uint8_t dtn = 1);
 

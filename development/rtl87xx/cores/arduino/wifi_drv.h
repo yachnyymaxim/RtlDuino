@@ -43,6 +43,7 @@ extern "C" {
 class WiFiDrv
 {
 private:
+    //static rtw_mode_t mode; 
 	// settings of requested network
 	static uint8_t  _networkCount;
 	static char     _networkSsid[WL_NETWORKS_LIST_MAXNUM][WL_SSID_MAX_LENGTH];
@@ -53,7 +54,7 @@ private:
     static rtw_wifi_setting_t wifi_setting;
 
     static rtw_result_t wifidrv_scan_result_handler( rtw_scan_handler_result_t* malloced_scan_result );
-
+    
 public:
 
     /*
@@ -269,7 +270,7 @@ public:
 
 	static int8_t apSetChannel(const char *channel);
 
-	static int8_t apActivate();
+	static int8_t apActivate(bool sta = false, uint8_t gw0=192, uint8_t gw1=168, uint8_t gw2=1, uint8_t gw3=1);
 
 	static int SetDTIM(uint8_t dtn);
 };

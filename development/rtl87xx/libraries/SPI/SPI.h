@@ -54,6 +54,10 @@ public:
 	SPISettings() {
         SPISettings(4000000, MSBFIRST, SPI_MODE0);
     }
+    
+    void setClock(uint32_t clock){
+        _clock = clock;
+    }
 
 private:
     uint32_t _clock;

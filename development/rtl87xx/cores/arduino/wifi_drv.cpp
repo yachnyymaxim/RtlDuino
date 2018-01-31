@@ -16,6 +16,7 @@ extern "C" {
 #include "lwip_netconf.h"
 #include "lwip/err.h"
 #include "lwip/api.h"
+#include "lwip/netif.h"
 #include <dhcp/dhcps.h>
 
 extern struct netif xnetif[NET_IF_NUM]; 
@@ -35,6 +36,7 @@ static char init_lwip = false;
 static rtw_network_info_t wifi = {0};
 static rtw_ap_info_t ap = {0};
 static unsigned char password[65] = {0};
+static rtw_mode_t mode = RTW_MODE_STA;
 
 rtw_wifi_setting_t WiFiDrv::wifi_setting;
 
@@ -62,7 +64,7 @@ void WiFiDrv::wifiDriverInit()
 	}        
     if (init_wlan == false) {
         init_wlan = true;
-        wifi_on(RTW_MODE_STA);
+        wifi_on(mode);
     }
 }
 
@@ -84,7 +86,7 @@ int8_t WiFiDrv::wifiSetNetwork(char* ssid, uint8_t ssid_len)
                     wifi.password_len, wifi.key_id, NULL);
 
     if (ret == RTW_SUCCESS) {
-
+        
         dhcp_result = LwIP_DHCP(0, DHCP_START);
 
         init_wifi_struct();
@@ -236,13 +238,23 @@ int8_t WiFiDrv::apSetChannel(const char *channel)
 	return ret;
 }
 
-int8_t WiFiDrv::apActivate()
+int8_t WiFiDrv::apActivate(bool sta, uint8_t gw0, uint8_t gw1, uint8_t gw2, uint8_t gw3)
 {
+    const char *ifname = WLAN0_NAME;
+    if (sta){
+        mode = RTW_MODE_STA_AP;
+        ifname = WLAN1_NAME;
+    }else{
+        mode = RTW_MODE_AP;
+    }
+
 #if CONFIG_LWIP_LAYER
 	struct ip_addr ipaddr;
 	struct ip_addr netmask;
 	struct ip_addr gw;
 	struct netif * pnetif = &xnetif[0];
+    if (mode == RTW_MODE_STA_AP)
+        pnetif = &xnetif[1];
 #endif
 	int timeout = 20;
 	int ret = WL_SUCCESS;
@@ -260,14 +272,16 @@ int8_t WiFiDrv::apActivate()
 
 #if CONFIG_LWIP_LAYER
 	dhcps_deinit();
-	IP4_ADDR(&ipaddr, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
-	IP4_ADDR(&netmask, NETMASK_ADDR0, NETMASK_ADDR1 , NETMASK_ADDR2, NETMASK_ADDR3);
-	IP4_ADDR(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
+	//IP4_ADDR(&ipaddr, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
+	IP4_ADDR(&ipaddr, gw0, gw1, gw2, gw3);
+    IP4_ADDR(&netmask, NETMASK_ADDR0, NETMASK_ADDR1 , NETMASK_ADDR2, NETMASK_ADDR3);
+	//IP4_ADDR(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
+    IP4_ADDR(&gw, gw0, gw1, gw2, gw3);
 	netif_set_addr(pnetif, &ipaddr, &netmask,&gw);
 #endif
 	wifi_off();
 	vTaskDelay(20);
-	if (wifi_on(RTW_MODE_AP) < 0){
+	if (wifi_on(mode) < 0){
 		printf("\n\rERROR: Wifi on failed!");
 		ret = WL_FAILURE;
 		goto exit;
@@ -283,9 +297,9 @@ int8_t WiFiDrv::apActivate()
 	while(1) {
 		char essid[33];
 
-		if(wext_get_ssid(WLAN0_NAME, (unsigned char *) essid) > 0) {
+		if(wext_get_ssid(ifname, (unsigned char *) essid) > 0) {
 			if(strcmp((const char *) essid, (const char *)ap.ssid.val) == 0) {
-				printf("\n\r%s started\n", ap.ssid.val);
+				printf("\n\r%s started on %s\n", ap.ssid.val,ifname);
 				ret = WL_SUCCESS;
 				break;
 			}
@@ -302,6 +316,7 @@ int8_t WiFiDrv::apActivate()
 	}
 #if CONFIG_LWIP_LAYER
 	//LwIP_UseStaticIP(pnetif);
+    //pnetiff->flags |= NETIF_FLAG_IPSWITCH;
 	dhcps_init(pnetif);
 #endif
 
