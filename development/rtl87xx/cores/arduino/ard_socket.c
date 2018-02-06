@@ -8,6 +8,13 @@ extern "C" {
 #include <platform/platform_stdlib.h>
 #include "ard_socket.h"
 
+#pragma push_macro("printf")
+#ifdef printf
+ #undef printf
+#endif
+#define printf(...) {}
+
+
 int start_server(uint16_t port, uint8_t protMode)
 {
     int _sock;
@@ -217,6 +224,8 @@ int start_client(uint32_t ipAddress, uint16_t port, uint8_t protMode)
 
     return _sock;
 }
+
+#pragma pop_macro("printf")
 
 #ifdef __cplusplus
 }

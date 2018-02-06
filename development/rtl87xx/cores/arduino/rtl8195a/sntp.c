@@ -306,7 +306,8 @@ static void sntp_request(void *arg);
 /** The UDP pcb used by the SNTP client */
 static struct udp_pcb* sntp_pcb;
 /** Addresses of servers */
-static char* sntp_server_addresses[] = {SNTP_SERVER_ADDRESS};
+static const char *sntp_defaut_address = SNTP_SERVER_ADDRESS;
+static char* sntp_server_addresses[] = {NULL};
 #if SNTP_SUPPORT_MULTIPLE_SERVERS
 /** The currently used server (initialized to 0) */
 static u8_t sntp_current_server;
@@ -599,7 +600,7 @@ sntp_request(void *arg)
 
   /* initialize SNTP server address */
 #if SNTP_SERVER_DNS
-  err = dns_gethostbyname(sntp_server_addresses[sntp_current_server], &sntp_server_address,
+  err = dns_gethostbyname((sntp_server_addresses[sntp_current_server] ? sntp_server_addresses[sntp_current_server]: sntp_defaut_address), &sntp_server_address,
     sntp_dns_found, NULL);
   if (err == ERR_INPROGRESS) {
     /* DNS request sent, wait for sntp_dns_found being called */
@@ -660,18 +661,25 @@ sntp_stop(void)
 
 /**
  * @brief Set new NTP server
- * @param servername: NTP server DNS or IP as string, SHOULD BE KEEP ALLOCATED
+ * @param servername: NTP server DNS or IP as string, pass NULL to revert to hardcoded default
  */
-void sntp_set_server(char *servername) {
+void sntp_set_server(const char *servername) {
 #if SNTP_SUPPORT_MULTIPLE_SERVERS
   #warning Only first NTP server can be changed in this implementation
   if (servername) {
       sntp_server_addresses[0] = servername;
     };
 #else
+  if (sntp_server_addresses[0] && sntp_server_addresses[0] != sntp_defaut_address) {
+    free(sntp_server_addresses[0]);
+    sntp_server_addresses[0] = NULL;
+  }
   if (servername) {
-      sntp_server_addresses[0] = servername;
-    };
+     int sz = strlen(servername)+1;
+     char *a = (char*)malloc(sz);
+     memcpy(a, servername,sz);
+      sntp_server_addresses[0] = a;
+  }
 #endif
 }
 /**
@@ -679,6 +687,6 @@ void sntp_set_server(char *servername) {
  * @return first value of servers array
  */
 char *sntp_get_server(void) {
-  return sntp_server_addresses[0];
+  return sntp_server_addresses[0] ? sntp_server_addresses[0] : sntp_defaut_address;
 }
 #endif /* LWIP_UDP */
