@@ -8,11 +8,9 @@ extern "C" {
 
 uint16_t SSLDrv::availData(sslclient_context *ssl_client)
 {
-	int ret;
-
-	if (ssl_client->socket < 0)		
+	if (ssl_client->socket < 0)
 		return 0;
-	
+
 	if(_available) {
 		return 1;
 	} else {
@@ -51,7 +49,7 @@ bool SSLDrv::getData(sslclient_context *ssl_client, uint8_t *data, uint8_t peek)
         }
 		return true;
 	}
- 
+
 	return false;
 }
 
@@ -93,11 +91,11 @@ bool SSLDrv::sendData(sslclient_context *ssl_client, const uint8_t *data, uint16
     int ret;
 
     if (ssl_client->socket < 0)
-        return false;        	
+        return false;
 
     ret = send_ssl_data(ssl_client, data, len);
 
-    if (ret == 0) {  
+    if (ret == 0) {
         return false;
     }
 

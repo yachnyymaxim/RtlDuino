@@ -4,7 +4,7 @@
 
 void renderHexdata(char* out, unsigned int outsize,  uint8_t* data, unsigned int datasize ){
   const char table[]="0123456789abcdef";
-  for (int i=0; i < datasize; ++i){
+  for (unsigned int i=0; i < datasize; ++i){
     if((i << 1) + 1 >= outsize - 1 )
       break;
     out[i << 1] = table[data[i] >> 4];
@@ -24,7 +24,7 @@ MD5Hash& MD5Hash::operator= (const MD5Hash &other){
 
 String MD5Hash::toString(){
   char ret[33];
-  
+
   renderHexdata(ret,sizeof(ret),hash,sizeof(hash));
   return String(ret);
 }

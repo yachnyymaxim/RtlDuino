@@ -45,7 +45,7 @@ extern int tcm_heap_freeSpace(void);
 __attribute__((noreturn)) void __panic_func(const char* file, int line, const char* func)
 {
 	DiagPrintf("\r\nPanic: %s, line: %d, %s\r\n");
-	while(1);	
+	while(1);
 }
 
 #ifdef __cplusplus
@@ -56,11 +56,11 @@ void hexdump(void * ptr, int cnt)
 {
 	char * p = (char *) ptr;
 	int c = cnt;
-	while(c > 64) { 
+	while(c > 64) {
 		DumpForOneBytes((void *)p, 64);
 		p += 64;
 		c -= 64;
-	} 
+	}
 	if(c != 0) DumpForOneBytes((void *)p, c);
 }
 
@@ -77,13 +77,13 @@ void debug_on(void)
 void sys_info(void) {
 	rtl_printf("\r\nCLK CPU\t\t%d Hz\r\nRAM heap\t%d bytes\r\nTCM heap\t%d bytes\r\n",
 				HalGetCpuClk(), xPortGetFreeHeapSize(), tcm_heap_freeSpace());
-}				
+}
 
 unsigned int GetFlashSize(void)
 {
 	unsigned int FlashSize;
 	if(!fspic_isinit) flash_get_status(&flashobj);
-	if(flashobj.SpicInitPara.id[3] >= 0x14 && flashobj.SpicInitPara.id[0] <= 0x19) {
+	if(flashobj.SpicInitPara.id[2] > 0x11 && flashobj.SpicInitPara.id[2] < 0x20) {
 		FlashSize = 1<<(flashobj.SpicInitPara.id[2]); // Flash size in bytes
 	}
 	else FlashSize = 1024*1024;  // 1 mbytes
@@ -105,7 +105,7 @@ void * malloc(size_t size)
 	return ret;
 }
 
-void * zalloc(size_t size) 
+void * zalloc(size_t size)
 {
 	void * ret;
 	if((ret = pvPortMalloc(size)) == NULL)
@@ -229,5 +229,5 @@ void __throw_out_of_range(const char* str)
 }
 }
 
-*/    
+*/
 

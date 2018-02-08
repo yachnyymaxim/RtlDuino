@@ -33,8 +33,7 @@ extern uint32_t xTaskGetTickCountFromISR();
 
 static __inline uint32_t __get_ipsr__(void)
 {
-  volatile uint32_t __regIPSR          __asm("ipsr");
-  return(__regIPSR);
+  return __get_IPSR();
 }
 
 void delay( uint32_t ms )
@@ -79,7 +78,7 @@ uint32_t millis( void )
     return (__get_ipsr__() == 0) ? xTaskGetTickCount() : xTaskGetTickCountFromISR();
 }
 
-uint32_t micros( void ) 
+uint32_t micros( void )
 {
     uint32_t tick1, tick2;
     uint32_t us;

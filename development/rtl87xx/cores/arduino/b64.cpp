@@ -66,6 +66,8 @@ int b64_encode(const unsigned char* aInput, int aInputLen, unsigned char* aOutpu
             b64_encode(&aInput[i*3], aInputLen % 3, &aOutput[i*4], aOutputLen - (i*4));
         }
     }
+
+    return 0;
 }
 
 

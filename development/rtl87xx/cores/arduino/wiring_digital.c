@@ -23,6 +23,7 @@ extern "C" {
 #endif
 
 #include "gpio_api.h"
+#include "gpio_ex_api.h"
 #include "gpio_irq_api.h"
 #include "gpio_irq_ex_api.h"
 #include "pwmout_api.h"
@@ -46,7 +47,7 @@ void pinMode( uint32_t ulPin, uint32_t ulMode)
         return;
     }
 
-    if ( (g_APinDescription[ulPin].ulPinType == PIO_GPIO || g_APinDescription[ulPin].ulPinType == PIO_GPIO_IRQ) 
+    if ( (g_APinDescription[ulPin].ulPinType == PIO_GPIO || g_APinDescription[ulPin].ulPinType == PIO_GPIO_IRQ)
             && g_APinDescription[ulPin].ulPinMode == ulMode)
     {
         // Nothing changes in pin mode
@@ -58,13 +59,13 @@ void pinMode( uint32_t ulPin, uint32_t ulMode)
         return;
     }
 
-    if ( g_APinDescription[ulPin].ulPinType == PIO_GPIO && 
+    if ( g_APinDescription[ulPin].ulPinType == PIO_GPIO &&
             (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE) ) {
         // Pin mode changes from gpio_t to gpio_irq_t
         pinRemoveMode(ulPin);
     }
 
-    if ( g_APinDescription[ulPin].ulPinType == PIO_GPIO_IRQ && 
+    if ( g_APinDescription[ulPin].ulPinType == PIO_GPIO_IRQ &&
             (ulMode == INPUT || ulMode == OUTPUT || ulMode == INPUT_PULLUP || ulMode == INPUT_PULLNONE || ulMode == OUTPUT_OPENDRAIN) ) {
         // Pin mode changes from gpio_irq_t to gpio_t
         pinRemoveMode(ulPin);
@@ -162,7 +163,7 @@ int digitalRead( uint32_t ulPin )
 {
     gpio_t *pGpio_t;
     int pin_status;
-    
+
     if ( ulPin < 0 || ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC) )
     {
         return -1;
@@ -183,7 +184,6 @@ int digitalRead( uint32_t ulPin )
 void digitalChangeDir( uint32_t ulPin, uint8_t direction)
 {
     gpio_t *pGpio_t;
-    u32 RegValue;
 
     if ( ulPin < 0 || ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC) )
     {
@@ -231,10 +231,12 @@ uint32_t digitalPinToBitMask( uint32_t ulPin )
 
 uint32_t digitalSetIrqHandler( uint32_t ulPin, void (*handler)(uint32_t id, uint32_t event) ) {
     gpio_irq_handler_list[ulPin] = (void *) handler;
+    return 0;
 }
 
 uint32_t digitalClearIrqHandler( uint32_t ulPin ) {
     gpio_irq_handler_list[ulPin] = NULL;
+    return 0;
 }
 
 void pinRemoveMode(uint32_t ulPin) {

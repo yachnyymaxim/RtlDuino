@@ -90,11 +90,8 @@ void analogReference(eAnalogReference ulMode)
 
 uint32_t analogRead(uint32_t ulPin)
 {
-    uint32_t ulValue = 0;
-    uint32_t ulChannel;
     uint16_t ret = 0;
     float    voltage;
-    float    adc_value;
 
     switch ( ulPin ) {
         case A0:
@@ -129,7 +126,7 @@ uint32_t analogRead(uint32_t ulPin)
         voltage = 0;
     } else if ( ret > 3410){
         voltage = (float)(ret - 3410)*ADC_slope2 + 3.12;
-    } else { 
+    } else {
         voltage = (float)(ret-674)*ADC_slope1;
     }
 
@@ -147,10 +144,8 @@ void analogOutputInit(void) {
 // hardware support.  These are defined in the appropriate
 // pins_*.c file.  For the rest of the pins, we default
 // to digital output.
-void analogWrite(uint32_t ulPin, uint32_t ulValue) 
+void analogWrite(uint32_t ulPin, uint32_t ulValue)
 {
-    pwmout_t *obj;
-
     if (ulPin == DAC0)
     {
         if (g_dac_enabled[0] == false) {
@@ -158,7 +153,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
             g_dac_enabled[0] = true;
         }
         ulValue %= (1<<_writeResolution);
-        analogout_write(&dac0, ulValue * 1.0 / (1<<_writeResolution) );       
+        analogout_write(&dac0, ulValue * 1.0 / (1<<_writeResolution) );
     }
     else
     {
@@ -188,7 +183,7 @@ void analogWrite(uint32_t ulPin, uint32_t ulValue)
     }
 }
 
-typedef struct _tone_argument {
+struct _tone_argument {
     uint32_t ulPin;
     uint32_t timer_id;
 };
@@ -196,8 +191,6 @@ typedef struct _tone_argument {
 void _tone_timer_handler(void const *argument)
 {
     struct _tone_argument *arg = (struct _tone_argument *)argument;
-
-    uint32_t ulPin = (uint32_t) argument;
 
     noTone(arg->ulPin);
 
@@ -208,8 +201,6 @@ void _tone_timer_handler(void const *argument)
 
 void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration)
 {
-    pwmout_t *obj;
-
     if ((g_APinDescription[ulPin].ulPinAttribute & PIO_PWM) != PIO_PWM) {
         return;
     }

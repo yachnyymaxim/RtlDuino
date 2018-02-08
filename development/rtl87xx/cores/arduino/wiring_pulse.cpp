@@ -8,7 +8,7 @@
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the GNU Lesser General Public License for more details.
 
   You should have received a copy of the GNU Lesser General Public
@@ -56,20 +56,20 @@ extern uint32_t pulseIn( uint32_t ulPin, uint32_t state, uint32_t timeout )
 
 	// wait for any previous pulse to end
 	start_ticks = us_ticker_read();
-	while (gpio_read(pGpio_t) == state) {
+	while (gpio_read(pGpio_t) == (int)state) {
 		cur_ticks = us_ticker_read();
 		if ( cur_ticks - start_ticks > timeout ) return 0;
 	}
 
 	// wait for the pulse to start
-	while (gpio_read(pGpio_t) != state) {
+	while (gpio_read(pGpio_t) != (int)state) {
 		cur_ticks = us_ticker_read();
 		if ( cur_ticks - start_ticks > timeout ) return 0;
 	}
 
 	// wait for the pulse to stop
 	start_ticks = us_ticker_read();
-	while (gpio_read(pGpio_t) == state) {
+	while (gpio_read(pGpio_t) == (int)state) {
 		cur_ticks = us_ticker_read();
 		if ( cur_ticks - start_ticks > timeout ) return 0;
 	}

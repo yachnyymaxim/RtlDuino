@@ -21,11 +21,11 @@ uint32_t os_thread_create( void (*task)(const void *argument), void *argument, i
 }
 
 uint32_t os_thread_get_id( void ) {
-    return osThreadGetId();
+    return (uint32_t)osThreadGetId();
 }
 
 uint32_t os_thread_terminate( uint32_t thread_id ) {
-    return (uint32_t)osThreadTerminate(thread_id);
+    return (uint32_t)osThreadTerminate((osThreadId)thread_id);
 }
 
 uint32_t os_thread_yield( void ) {
@@ -33,19 +33,19 @@ uint32_t os_thread_yield( void ) {
 }
 
 uint32_t os_thread_set_priority( uint32_t thread_id, int priority ) {
-    return (uint32_t)osThreadSetPriority(thread_id, (osPriority)priority);
+    return (uint32_t)osThreadSetPriority((osThreadId)thread_id, (osPriority)priority);
 }
 
 int os_thread_get_priority( uint32_t thread_id ) {
-    return (int)osThreadGetPriority(thread_id);
+    return (int)osThreadGetPriority((osThreadId)thread_id);
 }
 
 int32_t os_signal_set( uint32_t thread_id, int32_t signals ) {
-    return osSignalSet(thread_id, signals);
+    return osSignalSet((osThreadId)thread_id, signals);
 }
 
 int32_t os_signal_clear( uint32_t thread_id, int32_t signals ) {
-    return osSignalClear(thread_id, signals);
+    return osSignalClear((osThreadId)thread_id, signals);
 }
 
 os_event_t os_signal_wait( int32_t signals, uint32_t millisec ) {
@@ -63,34 +63,58 @@ os_event_t os_signal_wait( int32_t signals, uint32_t millisec ) {
 
 typedef void (*os_ptimer) (void const *argument);
 
+typedef struct{
+    osTimerDef_t cmsis_os_timer_def;
+    osTimerId    cmsis_os_timer_id;
+} os_timer_t;
+
 uint32_t os_timer_create(void (*callback)(void const *argument), uint8_t isPeriodic, void *argument) {
 
-    osTimerDef_t *pTimerDef;
+    os_timer_t* p_timer = malloc(sizeof(os_timer_t));
 
-    pTimerDef = (osTimerDef_t *) malloc ( sizeof(osTimerDef_t) );
-    pTimerDef->ptimer = callback;
-    pTimerDef->custom = (struct os_timer_custom *) malloc ( sizeof (struct os_timer_custom) );
+    if (!p_timer)
+        return 0;
 
-    return osTimerCreate(pTimerDef, (isPeriodic ? osTimerPeriodic : osTimerOnce), argument);
+    p_timer->cmsis_os_timer_def.ptimer = callback;
+    p_timer->cmsis_os_timer_def.custom = (struct os_timer_custom *) malloc ( sizeof (struct os_timer_custom) );
+
+    if (!p_timer->cmsis_os_timer_def.custom)
+    {
+        free(p_timer);
+        return 0;
+    }
+
+    p_timer->cmsis_os_timer_id = osTimerCreate(&p_timer->cmsis_os_timer_def, (isPeriodic ? osTimerPeriodic : osTimerOnce), argument);
+
+    if (!p_timer->cmsis_os_timer_id)
+    {
+        free(p_timer->cmsis_os_timer_def.custom);
+        free(p_timer);
+        return 0;
+    }
+
+    return (uint32_t)p_timer;
 }
 
 uint32_t os_timer_start (uint32_t timer_id, uint32_t millisec) {
-    return osTimerStart (timer_id, millisec);
+
+
+    return osTimerStart (((os_timer_t*)timer_id)->cmsis_os_timer_id, millisec);
 }
 
 uint32_t os_timer_stop (uint32_t timer_id) {
-    return osTimerStop(timer_id);
+    return osTimerStop(((os_timer_t*)timer_id)->cmsis_os_timer_id);
 }
 
 uint32_t os_timer_delete(uint32_t timer_id) {
 
-    osTimerDef_t *pTimerDef;
+    os_timer_t* p_timer = (os_timer_t*)timer_id;
+    osTimerDelete(p_timer->cmsis_os_timer_id);
 
-    pTimerDef = (osTimerDef_t *) pvTimerGetTimerID(timer_id);
-    free (pTimerDef->custom);
-    free (pTimerDef);
+    free(p_timer->cmsis_os_timer_def.custom);
+    free(p_timer);
 
-    return osTimerDelete(timer_id);
+    return 0;
 }
 
 uint32_t os_semaphore_create(int32_t count) {

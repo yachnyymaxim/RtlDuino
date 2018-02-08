@@ -19,7 +19,7 @@
 */
 
 #ifdef ARDUINO_AMEBA
-#include <Arduino.h>
+#include <platform_stdlib.h>
 #else
 #include <stdio.h>
 #endif
