@@ -10,6 +10,7 @@ Arduino module RTL00(RTL8710AF), [F11AMIM13](http://fn-link.en.made-in-china.com
 ### Development Status
 
 List of improvements/differences to https://github.com/pvvx/RtlDuino
+* **WIFI** now support STA+AP mode and in AP u can choose IP address
 * Arduino **String** support binary data
 * Basic support RTL Cryptographics API (only MD5 at this time)
 * Ported HTTP server from ESP8266  https://github.com/esp8266/ESPWebServer

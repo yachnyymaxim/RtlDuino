@@ -63,7 +63,7 @@ extern int rtl_printf(const char *fmt, ...);
 extern int rtl_sprintf(char* str, const char* fmt, ...);
 
 #ifndef printf
-//#define printf		rtl_printf
+#define printf		rtl_printf
 #endif
 #ifndef sprintf
 //#define sprintf		rtl_sprintf
