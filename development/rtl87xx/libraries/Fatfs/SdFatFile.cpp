@@ -28,20 +28,20 @@ size_t SdFatFile::write(uint8_t c) {
 }
 
 size_t SdFatFile::write(const uint8_t *buf, size_t size) {
-    FRESULT ret = FR_OK;
     unsigned int writesize = 0;
 
-    ret = f_write((FIL *)m_file, (const void *)buf, size, &writesize);
+    if (FR_OK != f_write((FIL *)m_file, (const void *)buf, size, &writesize))
+        return 0;
 
     return writesize;
 }
 
 int SdFatFile::read() {
-    FRESULT ret = FR_OK;
     char c = 0;
     unsigned int readsize = 0;
 
-    ret = f_read((FIL *)m_file, &c, 1, &readsize);
+    if (FR_OK != f_read((FIL *)m_file, &c, 1, &readsize))
+        return EOF;
 
     return c;
 }
@@ -70,25 +70,25 @@ SdFatFile::operator bool() {
 }
 
 int SdFatFile::read(void *buf, uint16_t nbyte) {
-    FRESULT ret = FR_OK;
     unsigned int readsize = 0;
 
-    ret = f_read((FIL *)m_file, buf, nbyte, &readsize);
+    if (FR_OK != f_read((FIL *)m_file, buf, nbyte, &readsize))
+        return 0;
 
-    return readsize;
+    return (int)readsize;
 }
 
 int SdFatFile::readline(void *buf, uint16_t nbyte) {
-    FRESULT ret = FR_OK;
+    FRESULT ret;
     unsigned int readsize = 0;
     uint32_t pos = 0;
     char *cbuf = (char*) buf;
 
     pos = ((FIL *)m_file)->fptr;
-    
+
     ret = f_read((FIL *)m_file, buf, nbyte, &readsize);
-    
-    if (readsize == 0){
+
+    if (FR_OK != ret || readsize == 0){
         return -1;
     }
 
@@ -110,7 +110,7 @@ int SdFatFile::readline(void *buf, uint16_t nbyte) {
 
 
 size_t SdFatFile::size(){
-    
+
     return f_size((FIL *)m_file);
 }
 

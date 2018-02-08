@@ -21,9 +21,6 @@ int sdioInitErr = FR_OK;
 
 #if defined(BOARD_RTL8710)
 
-extern "C" unsigned short GPIOState[];
-extern "C" void HalPinCtrlRtl8195A(int,int,int);
-
 void SdFatFs::WP_Off() {
 		pin_mode(PA_7, PullDown);
 }
@@ -58,8 +55,8 @@ SdFatFs::SdFatFs() {
     else {
 	    if(sdio_sd_status() >=0) {
 	    	uint32_t i = sdio_sd_getCapacity();
-			printf("\nSD Capacity: %d sectors (%d GB | %d MB | %d KB)\n", i,
-				i >> 21, i >> 11, i >> 1);
+			printf("\nSD Capacity: %u sectors (%u GB | %u MB | %u KB)\n", (unsigned int)i,
+				(unsigned int)(i >> 21), (unsigned int)(i >> 11), (unsigned int)(i >> 1));
 		}
     }
 }
@@ -146,7 +143,7 @@ int SdFatFs::readDir(const char *path, char *result_buf, unsigned int bufsize) {
     DIR dir;
 
     char *fn;
-    unsigned int fnlen;
+    //unsigned int fnlen;
     int bufidx = 0;
 
 #if _USE_LFN
@@ -178,13 +175,13 @@ int SdFatFs::readDir(const char *path, char *result_buf, unsigned int bufsize) {
             if (*fno.lfname)
             {
                 fn = fno.lfname;
-                fnlen = fno.lfsize;
+                //fnlen = fno.lfsize;
             }
             else
 #endif
             {
                 fn = fno.fname;
-                fnlen = fno.fsize;
+                //fnlen = fno.fsize;
             }
 
             bufidx += sprintf(result_buf + bufidx, "%s", fn);
@@ -373,8 +370,6 @@ int SdFatFs::setLastModTime(const char *absolute_path, uint16_t year, uint16_t m
     fno.lfname = lfn;
     fno.lfsize = sizeof(lfn);
 #endif
-
-    int scan_count = 0;
 
     do {
         if (drv_num < 0) {
