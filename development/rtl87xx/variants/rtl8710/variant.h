@@ -39,6 +39,31 @@
 #define LED_BUILTIN 4
 #define SS 8
 
+enum rtl00_pins
+{
+  GA0,
+  GA1,
+  GA2,
+  GA3,
+  GA4,
+  GA5,
+  GB0,
+  GB1,
+  GC0,
+  GC1,
+  GC2,
+  GC3,
+  GC4,
+  GC5,
+  GE0,
+  GE1,
+  GE2,
+  GE3,
+  GE4,
+};
+
+
+
 #ifdef __cplusplus
 extern "C"{
 #endif // __cplusplus
@@ -54,6 +79,8 @@ extern "C"{
  * Use this function along with J-LINK or other debug tool
  **/
 extern void wait_for_debug();
+
+extern bool wait_for_debug_ext(int32_t time_to_wait_ms);
 
 #ifdef __cplusplus
 }

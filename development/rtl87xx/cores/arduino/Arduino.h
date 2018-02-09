@@ -185,5 +185,8 @@ void tone(uint32_t ulPin, unsigned int frequency, unsigned long duration = 0);
 //#include "Thread.h"
 //#include "DAC1.h"
 
+// Defines for compatibility with libraries built for Atmel chips
+#define SPI_CLOCK_DIV4 0
+
 
 #endif // Arduino_h
