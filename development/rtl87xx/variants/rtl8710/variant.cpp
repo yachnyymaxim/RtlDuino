@@ -96,19 +96,19 @@ void wait_for_debug() {
     delay(1000);
 }
 
-bool wait_for_debug_ext (int32_t time_to_wait_ms)
+uint8_t wait_for_debug_ext (int32_t time_to_wait_ms)
 {
     while (((CoreDebug->DHCSR) & CoreDebug_DHCSR_C_DEBUGEN_Msk) == 0)
     {
-        delay(200)
+        delay(200);
         time_to_wait_ms -= 200;
 
         if (time_to_wait_ms < 0)
-            return false;
+            return 0;
     }
 
     delay(200);
 
-    return true;
+    return 1;
 }
 

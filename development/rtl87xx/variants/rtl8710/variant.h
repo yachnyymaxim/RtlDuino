@@ -80,7 +80,7 @@ extern "C"{
  **/
 extern void wait_for_debug();
 
-extern bool wait_for_debug_ext(int32_t time_to_wait_ms);
+extern uint8_t wait_for_debug_ext(int32_t time_to_wait_ms);
 
 #ifdef __cplusplus
 }
